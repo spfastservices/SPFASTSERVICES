@@ -592,12 +592,16 @@ export default function App() {
                     <img
                       src={
                         cardFlipSide === 'front'
-                          ? '/public/assets/aistudio/IMG_20261029_112533_c48df79d.png'
-                          : '/public/assets/aistudio/IMG_20261029_112446_a0c78af5.png'
+                          ? '/assets/aistudio/IMG_20261029_112533_c48df79d.png'
+                          : '/assets/aistudio/IMG_20261029_112446_a0c78af5.png'
                       }
                       alt={cardFlipSide === 'front' ? 'SP Fast Services Front' : 'SP Fast Services Back'}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        // Fallback if image fails
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
 
                     {/* Gradient Overlay & Zoom Hint */}
@@ -1445,10 +1449,13 @@ export default function App() {
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-black">
                   <img
-                    src="/public/assets/aistudio/IMG_20261029_112446_a0c78af5.png"
+                    src="/assets/aistudio/IMG_20261029_112446_a0c78af5.png"
                     alt="SP Fast Services Card Back - Services Grid"
                     className="w-full h-auto object-contain"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                 </div>
               </div>
@@ -1461,10 +1468,13 @@ export default function App() {
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-black">
                   <img
-                    src="/public/assets/aistudio/IMG_20261029_112533_c48df79d.png"
+                    src="/assets/aistudio/IMG_20261029_112533_c48df79d.png"
                     alt="SP Fast Services Card Front - Banner & Contacts"
                     className="w-full h-auto object-contain"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                 </div>
               </div>
