@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Poppins:wght@300;400;500;600;700&family=Permanent+Marker&display=swap');
+
+@layer utilities {
+  .font-brush {
+    font-family: 'Caveat', cursive;
+  }
+  .font-marker {
+    font-family: 'Permanent Marker', cursive;
+  }
+  .font-display {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .font-body {
+    font-family: 'Poppins', sans-serif;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Luxury Glossy Service Card Style */
+.glossy-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.glossy-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  pointer-events: none;
+}
+
+.glossy-card::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.glossy-card:hover::after {
+  opacity: 1;
+}
+
+.glossy-card:hover {
+  transform: translateY(-6px) scale(1.018);
+  box-shadow: 0 24px 38px -10px rgba(0, 0, 0, 0.65), 0 0 28px 4px rgba(234, 179, 8, 0.22);
+}
+
+/* Brush Badge */
+.brush-badge-yellow {
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  clip-path: polygon(2% 8%, 98% 3%, 99% 92%, 1% 97%);
+}
+
+.brush-badge-blue {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  clip-path: polygon(1% 5%, 99% 0%, 97% 95%, 3% 100%);
+}
+
+/* Subtle Shimmer Animation */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite;
+}
