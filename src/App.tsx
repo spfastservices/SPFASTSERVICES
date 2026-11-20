@@ -4,6 +4,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import cardFrontFast from './assets/card_front_fast.webp?inline';
+import cardBackFast from './assets/card_back_fast.webp?inline';
 import {
   Globe,
   CreditCard,
@@ -561,63 +563,105 @@ export default function App() {
             {/* Right Column: Interactive 3D Visiting Card Flip Showcase */}
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
-                {/* Glow Backdrop */}
-                <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-blue-600 via-amber-400 to-emerald-500 opacity-30 blur-2xl animate-pulse" style={{ animationDuration: '4s' }} />
+                {/* Glow Backdrop (static for zero GPU repaint flicker) */}
+                <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-blue-600/30 via-amber-400/25 to-emerald-500/25 blur-xl pointer-events-none" />
 
                 <div className="relative bg-[#0b142c] border-2 border-blue-700/70 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3">
                   
                   {/* Card Header with Flip Toggle */}
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                      <span className="text-xs uppercase font-extrabold tracking-wider text-amber-400">
+                  <div className="flex items-center justify-between px-1 gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CreditCard className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span className="text-xs uppercase font-extrabold tracking-wider text-amber-400 truncate">
                         {cardFlipSide === 'front' ? 'Official Card Front' : 'Official Card Back'}
                       </span>
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => setCardFlipSide(cardFlipSide === 'front' ? 'back' : 'front')}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-900/70 hover:bg-blue-800 border border-blue-600/50 text-xs font-bold text-white transition-all hover:scale-105 cursor-pointer shadow-sm"
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-900/80 hover:bg-blue-800 border border-blue-500/50 text-xs font-bold text-white transition-transform duration-200 active:scale-95 cursor-pointer shadow-sm shrink-0"
                     >
-                      <RotateCw className="w-3 h-3 text-amber-400" />
-                      <span>Flip Card (Front / Back)</span>
+                      <RotateCw className={`w-3 h-3 text-amber-400 transition-transform duration-500 ${cardFlipSide === 'back' ? 'rotate-180' : ''}`} />
+                      <span>Flip Card</span>
                     </button>
                   </div>
 
-                  {/* 3D Card Display */}
+                  {/* True 3D Flip Card Display (both sides pre-rendered & inlined for 0ms instant open) */}
                   <div
                     onClick={() => setShowCardModal(true)}
-                    className="relative cursor-pointer aspect-[16/10] rounded-2xl overflow-hidden border-2 border-blue-600/60 shadow-inner group bg-slate-950"
-                  >
-                    <img
-                      src={
-                        cardFlipSide === 'front'
-                          ? '/assets/aistudio/IMG_20261029_112533_c48df79d.png'
-                          : '/assets/aistudio/IMG_20261029_112446_a0c78af5.png'
+                    className="relative cursor-pointer aspect-[16/10] w-full perspective-1000 group"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setShowCardModal(true);
                       }
-                      alt={cardFlipSide === 'front' ? 'SP Fast Services Front' : 'SP Fast Services Back'}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        // Fallback if image fails
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-
-                    {/* Gradient Overlay & Zoom Hint */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-4">
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <div className="text-xs text-amber-400 font-bold uppercase tracking-wider">
-                            {cardFlipSide === 'front' ? 'Banner & Contacts' : '14 Services Directory'}
-                          </div>
-                          <div className="text-sm font-bold text-white flex items-center gap-1">
-                            <span>Click to Zoom & View High-Res</span>
-                            <Eye className="w-3.5 h-3.5 text-amber-300" />
+                    }}
+                    aria-label="Open high-resolution visiting card preview"
+                  >
+                    <div
+                      className={`relative w-full h-full transition-transform duration-500 ease-out transform-style-3d ${
+                        cardFlipSide === 'back' ? 'rotate-y-180' : ''
+                      }`}
+                    >
+                      {/* Front Face */}
+                      <div className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden border-2 border-blue-500/60 bg-[#061028] backface-hidden shadow-inner">
+                        <img
+                          src={cardFrontFast}
+                          alt="SP Fast Services Visiting Card Front"
+                          width={760}
+                          height={475}
+                          loading="eager"
+                          decoding="sync"
+                          fetchPriority="high"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent flex items-end p-3.5 sm:p-4 pointer-events-none">
+                          <div className="flex items-center justify-between w-full gap-2">
+                            <div>
+                              <div className="text-[11px] text-amber-400 font-bold uppercase tracking-wider">
+                                Banner & Contacts
+                              </div>
+                              <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                                <span>Click to Zoom HD</span>
+                                <Eye className="w-3.5 h-3.5 text-amber-300" />
+                              </div>
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg">
+                              <Eye className="w-4 h-4" />
+                            </div>
                           </div>
                         </div>
-                        <div className="w-9 h-9 rounded-full bg-blue-600/80 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                          <Eye className="w-4 h-4" />
+                      </div>
+
+                      {/* Back Face */}
+                      <div className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden border-2 border-amber-400/60 bg-[#061028] backface-hidden rotate-y-180 shadow-inner">
+                        <img
+                          src={cardBackFast}
+                          alt="SP Fast Services Visiting Card Back"
+                          width={760}
+                          height={428}
+                          loading="eager"
+                          decoding="sync"
+                          className="w-full h-full object-contain bg-[#041442] transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent flex items-end p-3.5 sm:p-4 pointer-events-none">
+                          <div className="flex items-center justify-between w-full gap-2">
+                            <div>
+                              <div className="text-[11px] text-amber-400 font-bold uppercase tracking-wider">
+                                14 Services Directory
+                              </div>
+                              <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                                <span>Click to Zoom HD</span>
+                                <Eye className="w-3.5 h-3.5 text-amber-300" />
+                              </div>
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg">
+                              <Eye className="w-4 h-4" />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1447,14 +1491,17 @@ export default function App() {
                   <span>Back Side: Services Grid</span>
                   <span className="text-slate-400 text-[11px]">14 Core Online Services</span>
                 </div>
-                <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-black">
+                <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-[#041442]">
                   <img
-                    src="/assets/aistudio/IMG_20261029_112446_a0c78af5.png"
+                    src="/assets/aistudio/card_back_hd.webp"
                     alt="SP Fast Services Card Back - Services Grid"
                     className="w-full h-auto object-contain"
+                    decoding="async"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.src !== cardBackFast) {
+                        e.currentTarget.src = cardBackFast;
+                      }
                     }}
                   />
                 </div>
@@ -1466,14 +1513,17 @@ export default function App() {
                   <span>Front Side: Brand & Contacts</span>
                   <span className="text-slate-400 text-[11px]">7089900654 · Pan India</span>
                 </div>
-                <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-black">
+                <div className="rounded-2xl overflow-hidden border border-blue-700/60 shadow-xl bg-[#041442]">
                   <img
-                    src="/assets/aistudio/IMG_20261029_112533_c48df79d.png"
+                    src="/assets/aistudio/card_front_hd.webp"
                     alt="SP Fast Services Card Front - Banner & Contacts"
                     className="w-full h-auto object-contain"
+                    decoding="async"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.src !== cardFrontFast) {
+                        e.currentTarget.src = cardFrontFast;
+                      }
                     }}
                   />
                 </div>
